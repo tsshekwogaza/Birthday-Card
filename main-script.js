@@ -9,11 +9,12 @@ let recipientName = 'Sir Ben';
 let senderName    = 'Timothy';
 let customMessage = messageEl.textContent.trim();
 
-function applyText(){
+function applyText() {
   recipientEl.textContent = recipientName;
   senderEl.textContent = senderName;
   messageEl.textContent = customMessage;
 }
+
 applyText();
 
 
@@ -23,20 +24,9 @@ const today = new Date();
 const opts = { year:'numeric', month:'long', day:'numeric' };
 dateBadge.textContent = '🎂 ' + today.toLocaleDateString(undefined, opts);
 
-/* document.getElementById('personalizeBtn').addEventListener('click', () => {
-  const r = prompt('Recipient name', recipientName);
-  if (r !== null && r.trim()) recipientName = r.trim();
-  const s = prompt('Your name', senderName);
-  if (s !== null && s.trim()) senderName = s.trim();
-  const m = prompt('Your message', customMessage);
-  if (m !== null && m.trim()) customMessage = m.trim();
-  applyText();
-}); */
-
-
 
 // ======= Fireworks =======
-function fireworkAt(x, y){
+function fireworkAt(x, y) {
   const f = document.createElement('div');
   f.className = 'firework';
   f.style.left = x + 'px';
@@ -45,7 +35,7 @@ function fireworkAt(x, y){
   setTimeout(()=> f.remove(), 950);
 }
 
-function burst(n=3){
+function burst(n=3) {
   const {innerWidth:w, innerHeight:h} = window;
   for(let i=0;i<n;i++){
     const x = Math.random()*w*0.9 + w*0.05;
@@ -56,6 +46,7 @@ function burst(n=3){
 
 document.getElementById('burstBtn').addEventListener('click', ()=> burst(5));
 document.addEventListener('click', (e)=>{
+  
   // ignore button clicks (handled above) but allow background taps
   const tag = (e.target.tagName||'').toLowerCase();
   if(['button','a','input','textarea','label','svg','path'].includes(tag)) return;
@@ -66,9 +57,20 @@ document.addEventListener('click', (e)=>{
 
 // ======= Balloons =======
 const balloonsWrap = document.getElementById('balloons');
-const colors = ['#ff9a9e', '#fad0c4', '#a18cd1', '#fbc2eb', '#84fab0', '#8fd3f4', '#ffd166', '#06d6a0', '#ef476f', '#118ab2'];
+const colors = [
+  '#ff9a9e', 
+  '#fad0c4', 
+  '#a18cd1', 
+  '#fbc2eb', 
+  '#84fab0', 
+  '#8fd3f4', 
+  '#ffd166', 
+  '#06d6a0', 
+  '#ef476f', 
+  '#118ab2'
+];
 
-function createBalloon(){
+function createBalloon() {
   const b = document.createElement('div');
   b.className = 'balloon';
   const c = colors[Math.floor(Math.random()*colors.length)];
@@ -106,7 +108,7 @@ messageEl.addEventListener('mousedown', ()=> { pressTimer = setTimeout(copyMessa
 messageEl.addEventListener('mouseup', ()=> clearTimeout(pressTimer));
 messageEl.addEventListener('mouseleave', ()=> clearTimeout(pressTimer));
 
-function copyMessage(){
+function copyMessage() {
   const text = `Happy Birthday, ${recipientName}!\n\n${customMessage}\n\n— ${senderName}`;
   navigator.clipboard?.writeText(text).then(()=>{
     const old = messageEl.textContent;
@@ -114,3 +116,4 @@ function copyMessage(){
     setTimeout(()=> messageEl.textContent = old, 1200);
   });
 }
+
