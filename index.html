@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sir Ben | Birthday card</title>
+  <style>
+    :root{
+      --bg1:#0f1021;
+      --bg2:#1f2241;
+      --accent:#ffd166;
+      --accent2:#06d6a0;
+      --accent3:#ef476f;
+      --accent4:#118ab2;
+      --card:#14162b;
+      --text:#f7f7fb;
+      --muted:#b9bdd6;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 70% 20%, #262a52 0%, transparent 60%),
+                  radial-gradient(900px 500px at 20% 80%, #222551 0%, transparent 70%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* Subtle stars */
+    .stars{position:fixed; inset:0; pointer-events:none;}
+    .stars::before, .stars::after{
+      content:""; position:absolute; inset:0; 
+      background-repeat:repeat; background-size:200px 200px; opacity:.25; filter:drop-shadow(0 0 2px #fff6);
+    }
+    .stars::before{background-image:radial-gradient(1px 1px at 20% 30%, #fff 50%, transparent 51%),
+                                     radial-gradient(1px 1px at 60% 70%, #fff 50%, transparent 51%),
+                                     radial-gradient(1px 1px at 80% 40%, #fff 50%, transparent 51%);}   
+    .stars::after{background-image:radial-gradient(1px 1px at 35% 50%, #fff 50%, transparent 51%),
+                                    radial-gradient(1px 1px at 75% 20%, #fff 50%, transparent 51%),
+                                    radial-gradient(1px 1px at 5% 85%, #fff 50%, transparent 51%);}   
+
+    .center{
+      position:relative;
+      display:grid; place-items:center;
+      min-height:100dvh; padding:24px;
+    }
+
+    .card{
+      position:relative;
+      width:min(800px, 95vw);
+      border-radius:24px; 
+      background:linear-gradient(180deg, #171936, #0c0d1c);
+      border:1px solid #2b2e59;
+      box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+      overflow:hidden;
+      padding: clamp(20px, 5vw, 40px);
+    }
+
+    .topline{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; 
+      margin-bottom:10px; color:var(--muted);
+      font-size:clamp(12px, 1.8vw, 14px);
+    }
+    .badge{padding:6px 10px; border-radius:999px; background:#222552; border:1px solid #34386e}
+
+    h1{
+      margin:10px 0 8px;
+      font-size:clamp(28px, 5vw, 48px);
+      line-height:1.05;
+      letter-spacing:.3px;
+    }
+    .subtitle{color:var(--muted); font-size:clamp(14px, 2.2vw, 18px); margin-bottom:20px}
+
+    .message{
+      font-size:clamp(16px, 2.2vw, 20px); line-height:1.6; color:#e8e9ff;
+      background:rgba(255,255,255,.03); border:1px solid #2a2d59; border-radius:16px; padding:18px 20px;
+    }
+
+    .footer{
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin-top:22px; color:var(--muted);
+    }
+    .btn{
+      appearance:none; border:none; cursor:pointer; 
+      padding:10px 14px; border-radius:12px; font-weight:600; 
+      background:linear-gradient(180deg, #2a2e67, #1b1e49); color:#fff;
+      border:1px solid #3a3f8e; box-shadow:0 8px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      transition: transform .08s ease, filter .2s ease;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+
+    /* Balloons */
+    .balloons{position:fixed; inset:0; overflow:hidden; pointer-events:none}
+    .balloon{
+      position:absolute; bottom:-20vh; width:42px; height:54px; border-radius:60% 60% 60% 60%;
+      background: var(--accent);
+      box-shadow: inset 0 -8px 16px rgba(0,0,0,.25), inset 6px 8px 14px rgba(255,255,255,.25);
+      transform:translateY(0) rotate(0deg);
+      animation: floatUp linear infinite;
+    }
+    .balloon::after{ /* knot */
+      content:""; position:absolute; left:50%; bottom:-6px; transform:translateX(-50%);
+      width:8px; height:8px; background:inherit; clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    }
+    .string{ position:absolute; left:50%; bottom:-110px; width:1.4px; height:120px; 
+      background:linear-gradient(to bottom, #fff8, #fff2 60%, transparent); transform:translateX(-50%); }
+
+    @keyframes floatUp{
+      0%{ transform: translateY(0) rotate(0deg); opacity:0 }
+      8%{ opacity:1 }
+      100%{ transform: translateY(-130vh) rotate(6deg); opacity:.95 }
+    }
+
+    /* Fireworks (CSS & JS hybrid) */
+    .firework{
+      position: fixed; left: 50%; top: 50%; width: 4px; height: 4px; border-radius: 50%;
+      background: transparent; pointer-events:none; filter: drop-shadow(0 0 6px #fff);
+      animation: boom 900ms ease-out forwards;
+    }
+    @keyframes boom{
+      0%{ box-shadow: 0 0 #fff; opacity:1; transform:scale(1)}
+      100%{ box-shadow:
+        0 -80px var(--accent), 0 80px var(--accent2), 80px 0 var(--accent3), -80px 0 var(--accent4),
+        56px -56px #fff, -56px -56px #ffd6fb, 56px 56px #a0f, -56px 56px #0ff,
+        0 -140px #fff2, 0 140px #fff2, 140px 0 #fff2, -140px 0 #fff2; 
+        opacity:0; transform:scale(1.2)
+      }
+    }
+
+    /* Subtle instruction */
+    .hint{font-size:12px; opacity:.8;}
+
+    /* Responsive tweaks */
+    @media (max-width: 480px){
+      .footer{flex-direction:column; align-items:stretch}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="balloons" id="balloons"></div>
+
+  <main class="center">
+    <section class="card" role="region" aria-label="Digital birthday card">
+      <div class="topline">
+        <span class="badge" id="dateBadge">🎂 Today</span>
+        <span class="hint">Click / tap anywhere for fireworks</span>
+      </div>
+      <h1>Happy Birthday, <span id="recipient"></span>! 🎉</h1>
+      <p class="subtitle">Thank you for the guidance, support, wisdom you share, and for believing in me.</p>
+
+      <div class="message" id="message">
+        📢 You have sparked my love for building on the web, and inspired me in ways I can not fully express. I feel lucky to have you as my mentor. Wishing you good health, joy, and continued success in all that you do. May this new age bring you even more happiness and fulfillment.
+      </div>
+
+      <div class="footer">
+        <div>
+          From <strong id="sender">Your name</strong>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <!-- <button class="btn" id="personalizeBtn" title="Edit names and message">✏️ Personalize</button> -->
+          <button class="btn" id="burstBtn" title="Launch fireworks">🎆 Fireworks</button>
+          <button class="btn" id="balloonBtn" title="Release balloons">🎈 Balloons</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ======= Simple Personalization =======
+    const recipientEl = document.getElementById('recipient');
+    const senderEl    = document.getElementById('sender');
+    const messageEl   = document.getElementById('message');
+
+    // Optional: set these before sending
+    let recipientName = 'Sir Ben';
+    let senderName    = 'Timothy';
+    let customMessage = messageEl.textContent.trim();
+
+    function applyText(){
+      recipientEl.textContent = recipientName;
+      senderEl.textContent = senderName;
+      messageEl.textContent = customMessage;
+    }
+    applyText();
+
+    // Add date badge text
+    const dateBadge = document.getElementById('dateBadge');
+    const today = new Date();
+    const opts = { year:'numeric', month:'long', day:'numeric' };
+    dateBadge.textContent = '🎂 ' + today.toLocaleDateString(undefined, opts);
+
+    /* document.getElementById('personalizeBtn').addEventListener('click', () => {
+      const r = prompt('Recipient name', recipientName);
+      if (r !== null && r.trim()) recipientName = r.trim();
+      const s = prompt('Your name', senderName);
+      if (s !== null && s.trim()) senderName = s.trim();
+      const m = prompt('Your message', customMessage);
+      if (m !== null && m.trim()) customMessage = m.trim();
+      applyText();
+    }); */
+
+    // ======= Fireworks =======
+    function fireworkAt(x, y){
+      const f = document.createElement('div');
+      f.className = 'firework';
+      f.style.left = x + 'px';
+      f.style.top  = y + 'px';
+      document.body.appendChild(f);
+      setTimeout(()=> f.remove(), 950);
+    }
+
+    function burst(n=3){
+      const {innerWidth:w, innerHeight:h} = window;
+      for(let i=0;i<n;i++){
+        const x = Math.random()*w*0.9 + w*0.05;
+        const y = Math.random()*h*0.5 + h*0.1;
+        setTimeout(()=> fireworkAt(x,y), i*120);
+      }
+    }
+
+    document.getElementById('burstBtn').addEventListener('click', ()=> burst(5));
+    document.addEventListener('click', (e)=>{
+      // ignore button clicks (handled above) but allow background taps
+      const tag = (e.target.tagName||'').toLowerCase();
+      if(['button','a','input','textarea','label','svg','path'].includes(tag)) return;
+      fireworkAt(e.clientX, e.clientY);
+    });
+
+    // ======= Balloons =======
+    const balloonsWrap = document.getElementById('balloons');
+    const colors = ['#ff9a9e', '#fad0c4', '#a18cd1', '#fbc2eb', '#84fab0', '#8fd3f4', '#ffd166', '#06d6a0', '#ef476f', '#118ab2'];
+
+    function createBalloon(){
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      const c = colors[Math.floor(Math.random()*colors.length)];
+      b.style.background = c;
+      b.style.left = (Math.random()*100) + 'vw';
+      const dur = 9 + Math.random()*6; // 9-15s
+      b.style.animationDuration = dur + 's';
+      b.style.animationDelay = (Math.random()*3) + 's';
+      b.style.transform = `translateY(${Math.random()*40}vh)`;
+
+      const s = document.createElement('div');
+      s.className = 'string';
+      b.appendChild(s);
+
+      balloonsWrap.appendChild(b);
+      setTimeout(()=> b.remove(), (dur+4)*1000);
+    }
+
+    function releaseBalloons(count=18){
+      for(let i=0;i<count;i++) setTimeout(createBalloon, i*250);
+    }
+
+    document.getElementById('balloonBtn').addEventListener('click', ()=> releaseBalloons(24));
+
+    // Auto trigger a gentle intro
+    setTimeout(()=>{ releaseBalloons(14); burst(3); }, 800);
+
+    // ======= Share helper (copy to clipboard) =======
+    // Long-press to copy the message text (useful for WhatsApp)
+    let pressTimer;
+    messageEl.addEventListener('mousedown', ()=> { pressTimer = setTimeout(copyMessage, 500); });
+    messageEl.addEventListener('mouseup', ()=> clearTimeout(pressTimer));
+    messageEl.addEventListener('mouseleave', ()=> clearTimeout(pressTimer));
+
+    function copyMessage(){
+      const text = `Happy Birthday, ${recipientName}!\n\n${customMessage}\n\n— ${senderName}`;
+      navigator.clipboard?.writeText(text).then(()=>{
+        const old = messageEl.textContent;
+        messageEl.textContent = '✅ Copied! Paste this into WhatsApp.';
+        setTimeout(()=> messageEl.textContent = old, 1200);
+      });
+    }
+  </script>
+</body>
+</html>
